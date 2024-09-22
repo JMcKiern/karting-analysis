@@ -42,7 +42,7 @@ def plotLapTimeDist(df, fig_num, plot=None):
     ax.set_title('Fig {}: Lap Time Distribution by Driver'.format(fig_num))
 
     sns.set_style('whitegrid')
-    sns.boxplot(x='Lap Time', y='Driver', data=df, sym='', saturation=0.3, ax=ax)
+    sns.boxplot(x='Lap Time', y='Driver', data=df, flierprops={'marker': ''}, saturation=0.3, ax=ax)
     sns.stripplot(x='Lap Time', y='Driver', data=df, linewidth=0.5, ax=ax)
 
     ax.set_axisbelow(True)
@@ -58,7 +58,7 @@ def plotPosUsingFastestNLaps(df, fig_num, plot=None):
         df_nlap = df.groupby('Driver')['Lap Time'].nsmallest(num_laps).reset_index()[['Driver', 'Lap Time']]
         df_res = getResults(df_nlap)
         df_res['Max Laps'] = num_laps
-        df_nlap_pos = df_nlap_pos.append(df_res)
+        df_nlap_pos = pd.concat([df_nlap_pos, df_res])
     df_nlap_pos = df_nlap_pos.reset_index()
 
     if plot is None:
@@ -82,12 +82,12 @@ def plotPosOverRace(df, fig_num, grid_positions, plot=None):
 
     # Plot driver positions over race
     df_lap_pos = pd.DataFrame(columns=['Driver', 'No. Laps', 'Position'])
-    df_lap_pos = df_lap_pos.append(df_grid)
+    df_lap_pos = pd.concat([df_lap_pos, df_grid])
     for num_laps in range(1, 20):
         df_lap = df[df['Lap Number'] <= num_laps]
         df_res = getResults(df_lap)
         df_res['No. Laps'] = num_laps
-        df_lap_pos = df_lap_pos.append(df_res)
+        df_lap_pos = pd.concat([df_lap_pos, df_res])
     df_lap_pos = df_lap_pos.reset_index()
 
     if plot is None:
@@ -112,7 +112,7 @@ def plotIntervalOverRace(df, fig_num, final_positions, plot=None):
         df_res = getResults(df_lap)
         # df_res['No. Laps'] = num_laps
         df_res['Total Time'] = df_res.apply(lambda x: x['Total Time'] if x['No. Laps'] == num_laps else x['Total Time'], axis=1)
-        df_lap_pos = df_lap_pos.append(df_res)
+        df_lap_pos = pd.concat([df_lap_pos, df_res])
     df_lap_pos = df_lap_pos.reset_index()
 
     # Get interval from leader
