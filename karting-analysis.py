@@ -52,7 +52,6 @@ def plotLapTimeDist(df, fig_num, plot=None):
     ax.yaxis.grid(True, which='minor')
 
 def plotPosUsingFastestNLaps(df, fig_num, plot=None):
-    # Plot driver positions using n fastest laps
     df_nlap_pos = pd.DataFrame(columns=['Driver', 'Max Laps', 'No. Laps', 'Position'])
     for num_laps in range(1, 20):
         df_nlap = df.groupby('Driver')['Lap Time'].nsmallest(num_laps).reset_index()[['Driver', 'Lap Time']]
@@ -80,7 +79,6 @@ def plotPosOverRace(df, fig_num, grid_positions, plot=None):
     df_grid['No. Laps'] = 0
     df_grid['Position'] = range(1, 1 + len(df_grid))
 
-    # Plot driver positions over race
     df_lap_pos = pd.DataFrame(columns=['Driver', 'No. Laps', 'Position'])
     df_lap_pos = pd.concat([df_lap_pos, df_grid])
     for num_laps in range(1, 20):
@@ -105,7 +103,6 @@ def plotPosOverRace(df, fig_num, grid_positions, plot=None):
     ax.yaxis.set_ticks(range(1,df_lap_pos['Driver'].nunique() + 1))
 
 def plotIntervalOverRace(df, fig_num, final_positions, plot=None):
-    # Plot intervals over race
     df_lap_pos = pd.DataFrame(columns=['Driver', 'No. Laps', 'Position'])
     for num_laps in range(1, 20):
         df_lap = df[df['Lap Number'] <= num_laps]
@@ -131,7 +128,6 @@ def plotIntervalOverRace(df, fig_num, final_positions, plot=None):
     ax.xaxis.set_ticks(range(1,df_lap_pos['No. Laps'].nunique() + 1))
 
 def plotLapTimeOverRace(df, fig_num, plot=None):
-    # Plot driver lap times over race
     if plot is None:
         fig, ax = plt.subplots()
     else:
@@ -149,7 +145,6 @@ def main():
 
     grid_positions = df[df['Mode'] == 'Qualifying'].groupby('Driver')['Lap Time'].mean().sort_values().index.tolist()
 
-    # Filter to only race data
     df = df[df['Mode'] == 'Race']
 
     # TODO: Add units to columns and axis labels
